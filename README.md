@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./.github/banner.png" width="1200px">
+  <img src="https://github.com/verful/notifications/raw/master/.github/banner.png" width="1200px">
 </div>
 
 
