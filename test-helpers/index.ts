@@ -121,7 +121,7 @@ async function createNotificationsTable(client: QueryClientContract) {
   await client.schema.createTableIfNotExists('notifications', (table) => {
     table.increments('id').primary()
     table.integer('notifiable_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-    table.json('notification').notNullable()
+    table.json('data').notNullable()
     table.timestamp('read_at', { useTz: true })
     table.timestamp('created_at', { useTz: true })
     table.timestamp('updated_at', { useTz: true })
