@@ -12,7 +12,7 @@
     "build/instructions.js",
     "build/instructions.md"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "@poppinss/manager": "^5.0.0",
     "@poppinss/utils": "^4.0.1",
