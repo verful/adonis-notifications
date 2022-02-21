@@ -1,5 +1,6 @@
 {
   "name": "@verful/notifications",
+  "description": "The easiest way to send notifications in AdonisJS",
   "version": "1.0.0",
   "main": "build/providers/NotificationProvider.js",
   "types": "build/adonis-typings/index.d.ts",
