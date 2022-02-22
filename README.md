@@ -20,6 +20,22 @@ The `@verful/notifications` package requires `@adonisjs/core >= 5.4.2`
 
 Also, it relies on `@adonisjs/lucid >= 16.3.2` for database notifications and on `@adonisjs/mail >= 7.2.4` for mail notifications.
 
+## **Setup**
+
+Install the package from the npm registry as follows.
+
+```
+npm i @verful/notifications
+# or
+yarn add @verful/notifications
+```
+
+Next, configure the package by running the following ace command.
+
+```
+node ace configure @verful/notifications
+```
+
 ## **Generating Notifications**
 Notifications are represented by a simple class, generally stored in the `app/Notifications` directory. If you dont see the directory, dont worry, it will be created when you run the `make:notification` ace command.
 
