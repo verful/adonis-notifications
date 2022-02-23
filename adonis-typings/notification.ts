@@ -18,6 +18,11 @@ declare module '@ioc:Verful/Notification' {
   export type MessageType = ChannelParams[0]
 
   export type NotifiableType = ChannelParams[1]
+
+  export type ResponseType = Awaited<
+    ReturnType<NotificationChannelsList[keyof NotificationChannelsList]['implementation']['send']>
+  >
+
   type NotificationContractChannels = {
     [Key in keyof NotificationChannelsList as `to${Capitalize<Key>}`]?: (
       notifiable: NotifiableModel
