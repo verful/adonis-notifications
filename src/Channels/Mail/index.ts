@@ -10,7 +10,6 @@ class MailChannel implements MailChannelContract {
     deferred: boolean = false
   ) {
     message.mailer = Mail.use(this.config.mailer)
-    console.log(deferred)
     if (deferred) {
       await message.sendLater()
     } else {
