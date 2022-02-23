@@ -135,12 +135,12 @@ export default class Notification
     this.send(notifiables, notification, true)
   }
 
-  protected createDatabase(config) {
+  protected createDatabase(_, config) {
     const DatabaseChannel = require('./Channels/Database').default
     return new DatabaseChannel(config)
   }
 
-  protected createMail(config) {
+  protected createMail(_, config) {
     const MailChannel = require('./Channels/Mail').default
     return new MailChannel(config)
   }
