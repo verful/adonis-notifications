@@ -1,7 +1,7 @@
 {
   "name": "@verful/notifications",
   "description": "The easiest way to send notifications in AdonisJS",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/verful/notifications.git"
