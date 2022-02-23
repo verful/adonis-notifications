@@ -54,9 +54,10 @@ First, apply the mixin on the model you are wanting to notify.
 ```typescript
 import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@ioc:Adonis/Core/Helpers'
-import Notifiable from '@ioc:Verful/Notification/Mixin'
+import { Notifiable } from '@ioc:Verful/Notification/Mixins'
 
-export default class User extends compose(BaseModel, Notifiable){
+// Notifiable takes the notification table name as it's only param 
+export default class User extends compose(BaseModel, Notifiable('notifications')){
 }
 ```
 
@@ -69,9 +70,6 @@ user.notify(new TestNotification())
 // Uses a in-memory queue to send the notification
 user.notifyLater(new TestNotification())
 ```
-
-> Be aware that you should only have one notifiable model on your app, because adonis doesn't support polymorphic relations.
-
 
 ### **Using the Notification module**
 
@@ -115,6 +113,8 @@ Sending notifications can take some time, to ensure the notification doesn't blo
 
 If you want to send a notification via e-mail, you should define a `toMail` method on the notification class. This method receives the `notifiable` entity and should return a [`BaseMailer`](https://github.com/adonisjs/mail/blob/develop/src/BaseMailer/index.ts) instance
 
+> If you want to use a mail driver other than default driver to send the notification, you can define it in the mailer class
+
 ```typescript
 class TestMailer extends BaseMailer {
   constructor(private user: User){
@@ -142,9 +142,9 @@ class TestNotification implements NotificationContract {
 
 The `database` channel stores the notification in a database table. This table contain the notification, and a JSON object that describes the notification
 
-> Database notifications requires [@adonisjs/lucid]() >=
+> Database notifications requires [@adonisjs/lucid](https://github.com/adonisjs/lucid) >= 16.3.2
 
-You can querythe table to display the notifications in your UI. But, before you can do that, you need to create a table to store the notifications. You may use the `notifications:table` ace command to generate a migration with the correct table schema. 
+You can query the table to display the notifications in your UI. But, before you can do that, you need to create a table to store the notifications. You may use the `notifications:table` ace command to generate a migration with the correct table schema. 
 
 ```
 node ace notifications:table
@@ -166,9 +166,8 @@ class TestNotification implements NotificationContract {
 ```
 
 ### **Accessing the notifications**
+
 After notifications are stored, you can acess them from your notifiable model entities. The `Notifiable` mixin includes a `notifications` Lucid relationship that returns the notifications for that entity. You can use the notifications like any other Lucid relationship. By default, the `readNotifications` and `unreadNotifications` methods will sort the notifications using the `created_at` timestamp, with the most recent at the beginning.
-
-
 
 ```typescript
 const user = User.findOrFail(1)
