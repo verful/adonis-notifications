@@ -11,6 +11,7 @@ import {
   NotificationConfig,
   NotificationManager,
 } from '@ioc:Verful/Notification'
+import { ManagerConfigValidator } from '@poppinss/utils'
 
 interface SendMessagePayload {
   channel: keyof NotificationChannelsList
@@ -33,6 +34,13 @@ export default class Notification
 
   constructor(app: ApplicationContract, private config: NotificationConfig) {
     super(app)
+    this.validateConfig()
+  }
+
+  private validateConfig() {
+    const validator = new ManagerConfigValidator(this.config, 'notification', 'config/notification')
+    validator.validateDefault('channel')
+    validator.validateList('channels', 'channel')
   }
 
   private async sendQueued(
