@@ -156,6 +156,6 @@ declare module '@ioc:Verful/Notification' {
   }
 
   const Notification: NotificationManager
-  const Notifiable: NotifiableMixin
-  export { Notifiable, Notification }
+
+  export default Notification
 }
