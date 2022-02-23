@@ -4,10 +4,12 @@ import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
 import Config from '@ioc:Adonis/Core/Config'
 import { DatabaseNotificationModel, DatabaseNotificationRow } from '@ioc:Verful/Notification'
 import StaticImplements from '../Helpers/StaticImplements'
+import type { LucidModel } from '@ioc:Adonis/Lucid/Orm'
 
+export default function createNotificationModel(tableName: string): DatabaseNotificationModel {
 @StaticImplements<DatabaseNotificationModel>()
-export default class DatabaseNotification extends BaseModel implements DatabaseNotificationRow {
-  public static table = Config.get('notification.notificationsTable', 'notifications')
+  class DatabaseNotification extends (BaseModel as LucidModel) implements DatabaseNotificationRow {
+    public static table = tableName
 
   @column({ isPrimary: true })
   public id: number
@@ -51,4 +53,7 @@ export default class DatabaseNotification extends BaseModel implements DatabaseN
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+  }
+
+  return DatabaseNotification
 }
