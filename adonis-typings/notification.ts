@@ -24,10 +24,6 @@ declare module '@ioc:Verful/Notification' {
     ) => Parameters<NotificationChannelsList[Key]['implementation']['send']>[0]
   }
 
-  export type MessageType = Parameters<
-    NotificationChannelsList[keyof NotificationChannelsList]['implementation']['send']
-  >[0]
-
   /**
    * New channels should use declaration merging to extend this interface with
    * a optional toChannel method that returns the needed payload to send a
@@ -37,23 +33,6 @@ declare module '@ioc:Verful/Notification' {
     via(
       notifiable: NotifiableModel
     ): keyof NotificationChannelsList | Array<keyof NotificationChannelsList>
-  }
-
-  export interface NotifiableModel extends LucidRow {
-    id: number
-    notifications: HasMany<DatabaseNotificationModel>
-    readNotifications(): Promise<DatabaseNotificationRow[]>
-    unreadNotifications(): Promise<DatabaseNotificationRow[]>
-    markNotificationsAsRead(this: NotifiableModel): Promise<void>
-    markNotificationsAsUnread(this: NotifiableModel): Promise<void>
-    notify(this: NotifiableModel, notification: NotificationContract): Promise<void>
-    notifyLater(this: NotifiableModel, notification: NotificationContract): Promise<void>
-  }
-
-  export interface NotifiableMixin {
-    <T extends NormalizeConstructor<LucidModel>>(superclass: T): {
-      new (...args: any[]): NotifiableModel & LucidRow
-    }
   }
 
   export interface DatabaseNotificationModel extends Omit<LucidModel, 'new'> {
@@ -156,7 +135,6 @@ declare module '@ioc:Verful/Notification' {
     channels: {
       [P in keyof NotificationChannelsList]: NotificationChannelsList[P]['config']
     }
-    notificationsTable?: string
   }
 
   export interface NotificationManager
