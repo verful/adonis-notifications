@@ -10,8 +10,12 @@ export default class NotificationProvider {
       const Notification = require('../src/Notification').default
       return new Notification(this.app, config)
     })
-    this.app.container.singleton('Verful/Notification/Mixin', () => {
-      return require('../src/Traits/Notifiable').default
+    this.app.container.singleton('Verful/Notification/Mixins', () => {
+      return {
+        Notifiable: require('../src/Mixins/Notifiable').default,
+        RoutesNotifications: require('../src/Mixins/RoutesNotifications').default,
+        HasDatabaseNotifications: require('../src/Mixins/HasDatabaseNotifications').default,
+      }
     })
   }
 }

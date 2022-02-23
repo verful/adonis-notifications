@@ -1,8 +1,16 @@
 declare module '@ioc:Adonis/Core/Application' {
-  import { Notifiable, Notification } from '@ioc:Verful/Notification'
-
+  import Notification from '@ioc:Verful/Notification'
+  import {
+    Notifiable,
+    RoutesNotifications,
+    HasDatabaseNotifications,
+  } from '@ioc:Verful/Notification/Mixins'
   export interface ContainerBindings {
     'Verful/Notification': typeof Notification
-    'Verful/Notification/Mixin': typeof Notifiable
+    'Verful/Notification/Mixins': {
+      Notifiable: typeof Notifiable
+      RoutesNotifications: typeof RoutesNotifications
+      HasDatabaseNotifications: typeof HasDatabaseNotifications
+    }
   }
 }

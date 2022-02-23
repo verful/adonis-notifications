@@ -8,18 +8,26 @@ declare module '@ioc:Verful/Notification' {
   import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
   export interface NotificationChannelContract {
-    send(notification: any, notifiable: NotifiableModel, ...extras: any[]): Promise<any>
+    send(notification: any, notifiable: NotifiableType, ...extras: any[]): Promise<any>
   }
+
+  type ChannelParams = Parameters<
+    NotificationChannelsList[keyof NotificationChannelsList]['implementation']['send']
+  >
+
+  export type MessageType = ChannelParams[0]
+
+  export type NotifiableType = ChannelParams[1]
+
+  export type ResponseType = Awaited<
+    ReturnType<NotificationChannelsList[keyof NotificationChannelsList]['implementation']['send']>
+  >
 
   type NotificationContractChannels = {
     [Key in keyof NotificationChannelsList as `to${Capitalize<Key>}`]?: (
       notifiable: NotifiableModel
     ) => Parameters<NotificationChannelsList[Key]['implementation']['send']>[0]
   }
-
-  export type MessageType = Parameters<
-    NotificationChannelsList[keyof NotificationChannelsList]['implementation']['send']
-  >[0]
 
   /**
    * New channels should use declaration merging to extend this interface with
@@ -30,23 +38,6 @@ declare module '@ioc:Verful/Notification' {
     via(
       notifiable: NotifiableModel
     ): keyof NotificationChannelsList | Array<keyof NotificationChannelsList>
-  }
-
-  export interface NotifiableModel extends LucidRow {
-    id: number
-    notifications: HasMany<DatabaseNotificationModel>
-    readNotifications(): Promise<DatabaseNotificationRow[]>
-    unreadNotifications(): Promise<DatabaseNotificationRow[]>
-    markNotificationsAsRead(this: NotifiableModel): Promise<void>
-    markNotificationsAsUnread(this: NotifiableModel): Promise<void>
-    notify(this: NotifiableModel, notification: NotificationContract): Promise<void>
-    notifyLater(this: NotifiableModel, notification: NotificationContract): Promise<void>
-  }
-
-  export interface NotifiableMixin {
-    <T extends NormalizeConstructor<LucidModel>>(superclass: T): {
-      new (...args: any[]): NotifiableModel & LucidRow
-    }
   }
 
   export interface DatabaseNotificationModel extends Omit<LucidModel, 'new'> {
@@ -66,9 +57,43 @@ declare module '@ioc:Verful/Notification' {
     updatedAt: DateTime
   }
 
+  export interface RoutesNotificationsModel extends LucidRow {
+    notify(this: this, notification: NotificationContract): Promise<void>
+    notifyLater(this: this, notification: NotificationContract): Promise<void>
+  }
+
+  export interface RoutesNotificationsMixin {
+    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+      new (...args: any[]): LucidRow & RoutesNotificationsModel
+    }
+  }
+
+  export interface HasDatabaseNotificationsModel extends LucidRow {
+    notifications: HasMany<DatabaseNotificationModel>
+    readNotifications(): Promise<DatabaseNotificationRow[]>
+    unreadNotifications(): Promise<DatabaseNotificationRow[]>
+    markNotificationsAsRead(this: this): Promise<void>
+    markNotificationsAsUnread(this: this): Promise<void>
+  }
+
+  export interface HasDatabaseNotificationsMixin {
+    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+      new (...args: any[]): LucidRow & HasDatabaseNotificationsModel
+    }
+  }
+
+  export interface NotifiableModel
+    extends RoutesNotificationsModel,
+      HasDatabaseNotificationsModel {}
+
+  export interface NotifiableMixin {
+    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+      new (...args: any[]): LucidRow & NotifiableModel
+    }
+  }
+
   export interface MailChannelConfig {
     driver: 'mail'
-    mailer: keyof MailersList
   }
 
   export interface DatabaseChannelConfig {
@@ -86,14 +111,17 @@ declare module '@ioc:Verful/Notification' {
     }
   }
 
-  export interface DatabaseChannelContract extends NotificationChannelContract {
-    send(notification: Record<string, any>, notifiable: NotifiableModel): Promise<void>
+  export interface DatabaseChannelContract {
+    send(
+      notification: Record<string, any>,
+      notifiable: HasDatabaseNotificationsModel
+    ): Promise<void>
   }
 
   export interface MailChannelContract {
     send(
       notification: InstanceType<typeof BaseMailer>,
-      notifiable?: NotifiableModel,
+      notifiable: RoutesNotificationsModel,
       deferred?: boolean
     ): Promise<void>
   }
@@ -111,8 +139,23 @@ declare module '@ioc:Verful/Notification' {
     channels: {
       [P in keyof NotificationChannelsList]: NotificationChannelsList[P]['config']
     }
-    notificationsTable?: string
   }
+
+  export type NotificationEventData = {
+    notification: MessageType
+    notifiable: NotifiableType
+    channel: keyof NotificationChannelsList
+  }
+
+  export type TrapCallback = (notification: MessageType, notifiable: NotifiableType) => any
+
+  export type QueueMonitorCallback = (
+    error?: Error & { notification: MessageType },
+    response?: {
+      message: MessageType
+      response: ResponseType
+    }
+  ) => void
 
   export interface NotificationManager
     extends ManagerContract<
@@ -122,17 +165,20 @@ declare module '@ioc:Verful/Notification' {
       { [P in keyof NotificationChannelsList]: NotificationChannelsList[P]['implementation'] }
     > {
     send(
-      notifiables: NotifiableModel | NotifiableModel[],
+      notifiables: NotifiableType | NotifiableType[],
       notification: NotificationContract,
       deferred?: boolean
-    ): Promise<void>
+    ): Promise<void | ResponseType[]>
     sendLater(
-      notifiables: NotifiableModel | NotifiableModel[],
+      notifiables: NotifiableType | NotifiableType[],
       notification: NotificationContract
     ): Promise<void>
+    trap(callback: TrapCallback): void
+    restore(): void
+    monitorQueue(callback: QueueMonitorCallback): void
   }
 
   const Notification: NotificationManager
-  const Notifiable: NotifiableMixin
-  export { Notifiable, Notification }
+
+  export default Notification
 }
