@@ -795,7 +795,7 @@
     color-support "^1.1.3"
     kleur "^4.1.4"
 
-"@poppinss/dev-utils@^2.0.0", "@poppinss/dev-utils@^2.0.1":
+"@poppinss/dev-utils@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@poppinss/dev-utils/-/dev-utils-2.0.1.tgz#e62ef6a7234f3fdf80bc9e8acceacb9a6d290c7f"
   integrity sha512-HYKEiRrQ71PQiuOOV/1HtCGh2cwvLaeasj9sJlK1l0Br2Fbwoph3vmM/6fnmO6bX9bgUYL18A7jtdZ0Izn9emw==
@@ -1226,17 +1226,6 @@ acorn@^8.4.1, acorn@^8.7.0:
   version "8.7.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.0.tgz#90951fde0f8f09df93549481e5fc141445b791cf"
   integrity sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ==
-
-adonis-provider-tester@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/adonis-provider-tester/-/adonis-provider-tester-1.2.0.tgz#6103c61949b4b889f7743db0c6d8866a26ccca48"
-  integrity sha512-NQQRZtcuPMDc/JAcBflG2Mvxd4cp7G/NrU1iWNBhApDsCHe5wGvUOOyVPskUDLxpWuyp/nDkRQZRvoDqpVIg/A==
-  dependencies:
-    "@adonisjs/ace" "^11.0.5"
-    "@adonisjs/core" "^5.4.2"
-    "@adonisjs/logger" "^4.1.1"
-    "@adonisjs/mrm-preset" "^5.0.2"
-    "@poppinss/dev-utils" "^2.0.0"
 
 aggregate-error@^3.0.0:
   version "3.1.0"
