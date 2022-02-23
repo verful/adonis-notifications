@@ -142,6 +142,8 @@ declare module '@ioc:Verful/Notification' {
     }
   }
 
+  export type TrapCallback = (notification: MessageType, notifiable: NotifiableType) => any
+
   export interface NotificationManager
     extends ManagerContract<
       ApplicationContract,
