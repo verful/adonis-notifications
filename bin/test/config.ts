@@ -22,7 +22,6 @@ const notification: NotificationConfig = {
   channels: {
     mail: {
       driver: 'mail',
-      mailer: 'smtp',
     },
     database: {
       driver: 'database',

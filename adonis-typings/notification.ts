@@ -94,7 +94,6 @@ declare module '@ioc:Verful/Notification' {
 
   export interface MailChannelConfig {
     driver: 'mail'
-    mailer: keyof MailersList
   }
 
   export interface DatabaseChannelConfig {
