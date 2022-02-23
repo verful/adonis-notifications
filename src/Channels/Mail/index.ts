@@ -1,5 +1,8 @@
-import Mail, { BaseMailer } from '@ioc:Adonis/Addons/Mail'
+import type MailManager from '@ioc:Adonis/Addons/Mail'
+import type { BaseMailer } from '@ioc:Adonis/Addons/Mail'
 import { MailChannelConfig, MailChannelContract, NotifiableModel } from '@ioc:Verful/Notification'
+
+const Mail = globalThis[Symbol.for('ioc.use')]('Adonis/Addons/Mail') as typeof MailManager
 
 class MailChannel implements MailChannelContract {
   constructor(private config: MailChannelConfig) {}
