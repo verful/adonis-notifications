@@ -142,7 +142,21 @@ declare module '@ioc:Verful/Notification' {
     }
   }
 
+  export type NotificationEventData = {
+    notification: MessageType
+    notifiable: NotifiableType
+    channel: keyof NotificationChannelsList
+  }
+
   export type TrapCallback = (notification: MessageType, notifiable: NotifiableType) => any
+
+  export type QueueMonitorCallback = (
+    error?: Error & { notification: MessageType },
+    response?: {
+      message: MessageType
+      response: ResponseType
+    }
+  ) => void
 
   export interface NotificationManager
     extends ManagerContract<
@@ -160,6 +174,9 @@ declare module '@ioc:Verful/Notification' {
       notifiables: NotifiableType | NotifiableType[],
       notification: NotificationContract
     ): Promise<void>
+    trap(callback: TrapCallback): void
+    restore(): void
+    monitorQueue(callback: QueueMonitorCallback): void
   }
 
   const Notification: NotificationManager

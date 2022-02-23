@@ -10,6 +10,9 @@ import {
   NotificationChannelsList,
   NotificationConfig,
   NotificationManager,
+  QueueMonitorCallback,
+  TrapCallback,
+  ResponseType,
 } from '@ioc:Verful/Notification'
 import { ManagerConfigValidator } from '@poppinss/utils'
 
@@ -32,7 +35,24 @@ export default class Notification
 
   public singleton = true
 
-  constructor(app: ApplicationContract, private config: NotificationConfig) {
+  private fakeChannel?: NotificationChannelContract
+
+  private queueMonitor: QueueMonitorCallback = (error) => {
+    if (error) {
+      this.logger.error(
+        {
+          notification: error.notification,
+          message: error.message,
+        },
+        'Unable to deliver email'
+      )
+    }
+  }
+
+  public emitter = this.app.container.use('Adonis/Core/Event')
+  public logger = this.app.container.use('Adonis/Core/Logger')
+
+  constructor(private app: ApplicationContract, private config: NotificationConfig) {
     super(app)
     this.validateConfig()
   }
@@ -48,9 +68,11 @@ export default class Notification
     cb: (error: null | any, response?: any) => void
   ) {
     try {
-      await this.use(channel).send(message, notifiable, true)
-      cb(null)
+      const response = await this.use(channel).send(message, notifiable, true)
+      this.emitter.emit('notification:sent', { notification: message, notifiable, channel })
+      cb(null, { message, response })
     } catch (error) {
+      error.notification = message
       cb(error)
     }
   }
@@ -59,7 +81,7 @@ export default class Notification
     notifiables: NotifiableModel | NotifiableModel[],
     notification: NotificationContract,
     deferred: boolean = false
-  ): Promise<void> {
+  ): Promise<ResponseType[] | void> {
     notifiables = Array.isArray(notifiables) ? notifiables : [notifiables]
 
     const notifications = notifiables
@@ -72,18 +94,45 @@ export default class Notification
       })
       .flat()
 
+    const responses: ResponseType[] = []
+
     for (const { channel, message, notifiable } of notifications) {
-      deferred
-        ? this.queue.push({ channel, message, notifiable })
-        : await this.use(channel).send(message, notifiable, false)
+      if (this.fakeChannel) {
+        this.fakeChannel.send(message, notifiable)
+        continue
+      }
+
+      if (deferred) {
+        this.queue.push({ channel, message, notifiable }, this.queueMonitor as any)
+        continue
+      }
+
+      const response = await this.use(channel).send(message, notifiable)
+      responses.push(response)
+      this.emitter.emit('notification:sent', { notification: message, notifiable, channel })
     }
+
+    return responses
+  }
+
+  public trap(callback: TrapCallback) {
+    const FakeChannel = require('./Channels/Fake').default
+    this.fakeChannel = new FakeChannel(callback)
+  }
+
+  public restore() {
+    this.fakeChannel = undefined
+  }
+
+  public monitorQueue(callback: QueueMonitorCallback): void {
+    this.queueMonitor = callback
   }
 
   public async sendLater(
     notifiables: NotifiableModel | NotifiableModel[],
     notification: NotificationContract
   ) {
-    return this.send(notifiables, notification, true)
+    this.send(notifiables, notification, true)
   }
 
   protected createDatabase(config) {
