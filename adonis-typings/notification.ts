@@ -66,6 +66,41 @@ declare module '@ioc:Verful/Notification' {
     updatedAt: DateTime
   }
 
+  export interface RoutesNotificationsModel extends LucidRow {
+    notify(this: this, notification: NotificationContract): Promise<void>
+    notifyLater(this: this, notification: NotificationContract): Promise<void>
+  }
+
+  export interface RoutesNotificationsMixin {
+    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+      new (...args: any[]): LucidRow & RoutesNotificationsModel
+    }
+  }
+
+  export interface HasDatabaseNotificationsModel extends LucidRow {
+    notifications: HasMany<DatabaseNotificationModel>
+    readNotifications(): Promise<DatabaseNotificationRow[]>
+    unreadNotifications(): Promise<DatabaseNotificationRow[]>
+    markNotificationsAsRead(this: this): Promise<void>
+    markNotificationsAsUnread(this: this): Promise<void>
+  }
+
+  export interface HasDatabaseNotificationsMixin {
+    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+      new (...args: any[]): LucidRow & HasDatabaseNotificationsModel
+    }
+  }
+
+  export interface NotifiableModel
+    extends RoutesNotificationsModel,
+      HasDatabaseNotificationsModel {}
+
+  export interface NotifiableMixin {
+    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+      new (...args: any[]): LucidRow & NotifiableModel
+    }
+  }
+
   export interface MailChannelConfig {
     driver: 'mail'
     mailer: keyof MailersList
