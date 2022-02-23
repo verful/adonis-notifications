@@ -8,9 +8,16 @@ declare module '@ioc:Verful/Notification' {
   import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
   export interface NotificationChannelContract {
-    send(notification: any, notifiable: NotifiableModel, ...extras: any[]): Promise<any>
+    send(notification: any, notifiable: NotifiableType, ...extras: any[]): Promise<any>
   }
 
+  type ChannelParams = Parameters<
+    NotificationChannelsList[keyof NotificationChannelsList]['implementation']['send']
+  >
+
+  export type MessageType = ChannelParams[0]
+
+  export type NotifiableType = ChannelParams[1]
   type NotificationContractChannels = {
     [Key in keyof NotificationChannelsList as `to${Capitalize<Key>}`]?: (
       notifiable: NotifiableModel
@@ -121,14 +128,17 @@ declare module '@ioc:Verful/Notification' {
     }
   }
 
-  export interface DatabaseChannelContract extends NotificationChannelContract {
-    send(notification: Record<string, any>, notifiable: NotifiableModel): Promise<void>
+  export interface DatabaseChannelContract {
+    send(
+      notification: Record<string, any>,
+      notifiable: HasDatabaseNotificationsModel
+    ): Promise<void>
   }
 
   export interface MailChannelContract {
     send(
       notification: InstanceType<typeof BaseMailer>,
-      notifiable?: NotifiableModel,
+      notifiable: RoutesNotificationsModel,
       deferred?: boolean
     ): Promise<void>
   }
@@ -157,12 +167,12 @@ declare module '@ioc:Verful/Notification' {
       { [P in keyof NotificationChannelsList]: NotificationChannelsList[P]['implementation'] }
     > {
     send(
-      notifiables: NotifiableModel | NotifiableModel[],
+      notifiables: NotifiableType | NotifiableType[],
       notification: NotificationContract,
       deferred?: boolean
-    ): Promise<void>
+    ): Promise<void | ResponseType[]>
     sendLater(
-      notifiables: NotifiableModel | NotifiableModel[],
+      notifiables: NotifiableType | NotifiableType[],
       notification: NotificationContract
     ): Promise<void>
   }
