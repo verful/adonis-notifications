@@ -23,26 +23,20 @@ export default function createNotificationModel(tableName: string): DatabaseNoti
   @column()
   public notifiableId: number
 
-  public async markAsRead() {
-    if (!this.readAt) {
-      this.readAt = DateTime.now()
-      await this.save()
-    }
+    public async markAsRead(this: DatabaseNotificationRow) {
+      await this.merge({ readAt: DateTime.now() }).save()
   }
 
-  public async markAsUnread() {
-    if (this.readAt) {
-      this.readAt = null
-      await this.save()
-    }
+    public async markAsUnread(this: DatabaseNotificationRow) {
+      await this.merge({ readAt: null }).save()
   }
 
   public get read() {
-    return this.readAt !== null
+      return Boolean(this.readAt)
   }
 
   public get unread() {
-    return this.readAt === null
+      return !this.readAt
   }
 
   @column.dateTime({ autoCreate: false, autoUpdate: false })
