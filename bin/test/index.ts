@@ -2,7 +2,6 @@ import 'reflect-metadata'
 
 import { expect } from '@japa/expect'
 import { specReporter } from '@japa/spec-reporter'
-import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run, TestContext } from '@japa/runner'
 import { Application } from '@adonisjs/core/build/standalone'
 import { Filesystem } from '@poppinss/dev-utils'
