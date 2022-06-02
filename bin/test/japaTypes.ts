@@ -23,8 +23,4 @@ declare module '@japa/runner' {
     ): NotificationContract
     getMailer(subject?: string, target?: string): Promise<InstanceType<typeof BaseMailer>>
   }
-
-  interface Test<Context, TestData> {
-    // notify TypeScript about custom test properties
-  }
 }
