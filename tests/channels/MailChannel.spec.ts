@@ -2,12 +2,10 @@ import Mail from '@ioc:Adonis/Addons/Mail'
 import { test } from '@japa/runner'
 import MailChannel from '../../src/Channels/Mail'
 
-test.group('MailChannel', (group) => {
-  group.each.teardown(async () => {
-    Mail.restore()
-  })
-
+test.group('MailChannel', () => {
   test('MailChannel.send', async ({ getMailer, getNotifiable, expect }) => {
+    const mail = Mail.fake()
+
     expect.assertions(1)
 
     const config = {
@@ -19,14 +17,14 @@ test.group('MailChannel', (group) => {
     const mailer = await getMailer('MailChannel.send')
     const notifiable = await getNotifiable(undefined, false)
 
-    Mail.trap((message) => {
-      expect(message.subject).toBe('MailChannel.send')
-    })
-
     await channel.send(mailer, notifiable)
+
+    expect(mail.exists({ subject: 'MailChannel.send' })).toBe(true)
   })
 
   test('MailChannel.send with deferred', async ({ getMailer, getNotifiable, expect }) => {
+    const mail = Mail.fake()
+
     expect.assertions(1)
 
     const config = {
@@ -35,13 +33,11 @@ test.group('MailChannel', (group) => {
     }
 
     const channel = new MailChannel(config)
-    const mailer = await getMailer('MailChannel.send')
+    const mailer = await getMailer('MailChannel.send with deferred')
     const notifiable = await getNotifiable()
 
-    Mail.trap((message) => {
-      expect(message.subject).toBe('MailChannel.send')
-    })
-
     await channel.send(mailer, notifiable, true)
+
+    expect(mail.exists({ subject: 'MailChannel.send with deferred' })).toBe(true)
   })
 })
