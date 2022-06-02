@@ -35,7 +35,7 @@ configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
     files: ['tests/**/*.spec.ts'],
-    plugins: [expect(), runFailedTests()],
+    plugins: [expect()],
     reporters: [specReporter()],
     importer: (filePath: string) => import(filePath),
     setup: [
