@@ -14,10 +14,7 @@ export default function createNotificationModel(tableName: string): DatabaseNoti
     @column({ isPrimary: true })
     public id: number
 
-    @column({
-      prepare: (value) => JSON.stringify(value),
-      consume: (value) => JSON.parse(value),
-    })
+    @column()
     public data: Record<string, any>
 
     @column()
