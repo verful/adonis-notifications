@@ -247,7 +247,7 @@ Notification.extend('push', () => new PushNotificationChannel())
 ```
 
 If you use a preload, make sure the file is listed in `.adonisrc.json`
-```json
+```javascript
 // .adonisrc.json
 ...
   "preloads": [
