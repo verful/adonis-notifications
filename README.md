@@ -215,18 +215,24 @@ await user.markNotificationsAsRead()
 You may want to deliver notifications using other channels, for that, you can use any class that implements the `NotificationChannelContract`
 
 ```typescript
+// app/Channels/PushNotificationChannel.ts
 import { NotificationChannelContract } from '@ioc:Verful/Notification'
+import User from 'App/Models/User'
 
-interface VoiceMessageContract {
-  text: string
+export interface PushNotificationMessageContract {
+  title: string
+  content: string
 }
 
-export default class VoiceChannel implements NotificationChannelContract {
+export default class PushNotificationChannel implements NotificationChannelContract {
   /**
    * Typing the notification argument guarantees type safety in the toChannel
    * method of the notification, in this case toVoice
    */
-  public send(notification: VoiceMessageContract, notifiable: NotifiableModel){}
+  public send(notification: PushNotificationMessageContract, notifiable: User) {
+    console.log('Sending push notification to user', notifiable.email, notification.title)
+    return Promise.resolve(null)
+  }
 }
 ```
 
@@ -235,30 +241,72 @@ After the channel is created, you must extend the `Notification` module, you can
 ```typescript
 // start/notification.ts
 import Notification from '@ioc:Verful/Notification'
-import VoiceChannel from 'App/Channels/VoiceChannel'
+import PushNotificationChannel from 'App/Channels/PushNotificationChannel'
 
-Notification.extend('voice', () => new VoiceChannel())
+Notification.extend('push', () => new PushNotificationChannel())
+```
+
+If you use a preload, make sure the file is listed in `.adonisrc.json`
+```json
+// .adonisrc.json
+...
+  "preloads": [
+    "./start/notification",
+    "./start/routes",
+    "./start/kernel"
+  ],
+...
 ```
 
 Then you must setup the config and contract for your channel
 
 ```typescript
 // config/notification.ts
-{
+const NotificationConfig: NotificationConfig = {
+  ...
   channels: {
-    voice: {
-      driver: 'voice'
-    }
+    push: {
+      driver: 'push',
+    },
+  ...
   }
 }
 
 // contracts/notification.ts
 interface NotificationChannelsList {
-  voice: {
-    implementation: VoiceChannel
-    config: {
-      driver: 'voice'
+    push: {
+      implementation: PushNotificationChannel
+      config: {
+        driver: 'push'
+      }
     }
+    ...
+}
+```
+
+To use the custom channel, return an object of type `PushNotificationMessageContract` in `toPush` function inside `NotificationContract`. The name `toPush` come from `to(camelcased channel name)`, so for 'push' channel it would be `toPush`, for 'voice' channel it would be `toVoice`. For example
+
+```
+// app/Notifications/TestNotification.ts
+export default class TestNotification implements NotificationContract {
+  public via(notifiable: NotifiableModel) {
+    const user = notifiable as User
+    const mainChannel = user.preferMail ? ('mail' as const) : ('database' as const)
+    return [mainChannel, 'push' as const]
+  }
+
+  public toMail(notifiable: NotifiableModel) {
+    const user = notifiable as User
+    return new TestEmail(user)
+  }
+
+  public toPush(notifiable: NotifiableModel) {
+    const user = notifiable as User
+    const res: PushNotificationMessageContract = {
+      title: 'Test notification',
+      content: `Hello ${user.email}, this is a test notification`,
+    }
+    return res
   }
 }
 ```
