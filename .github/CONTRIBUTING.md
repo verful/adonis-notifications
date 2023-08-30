@@ -6,24 +6,24 @@ We love pull requests. And following this guidelines will make your pull request
 
 - Install [EditorConfig](http://editorconfig.org/) plugin for your code editor to make sure it uses correct settings.
 - Fork the repository and clone your fork.
-- Install dependencies: `npm install`.
+- Install dependencies: `pnpm install`.
 
 ## Coding style
 
-We make use of [standard](https://standardjs.com/) to lint our code. Standard does not need a config file and comes with set of non-configurable rules.
+We make use of [eslint](https://eslint.org/) to lint our code.
 
 ## Development work-flow
 
 Always make sure to lint and test your code before pushing it to the GitHub.
 
 ```bash
-npm test
+pnpm test
 ```
 
 Just lint the code
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 **Make sure you add sufficient tests for the change**.
