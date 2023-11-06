@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@poppinss/manager": "^5.0.2",
-    "@poppinss/utils": "^4.0.4",
+    "@poppinss/utils": "^6.5.1",
     "fastq": "^1.13.0",
     "luxon": "^2.4.0"
   },
