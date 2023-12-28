@@ -22,7 +22,7 @@
     "@poppinss/manager": "^5.0.2",
     "@poppinss/utils": "^4.0.4",
     "fastq": "^1.13.0",
-    "luxon": "^2.4.0"
+    "luxon": "^3.4.4"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.7.0",
