@@ -27,4 +27,4 @@ const notificationsConfig: NotificationConfig = {
   }
 }
 
-export default NotificationConfig
+export default notificationsConfig

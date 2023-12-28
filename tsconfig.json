@@ -1,14 +1,26 @@
 {
-  "extends": "./node_modules/@adonisjs/mrm-preset/_tsconfig",
-  "files": [
-    "./node_modules/@adonisjs/lucid/build/adonis-typings/index.d.ts",
-    "./node_modules/@adonisjs/mail/build/adonis-typings/index.d.ts",
-    "./node_modules/@adonisjs/core/build/adonis-typings/index.d.ts",
-    "./node_modules/@adonisjs/application/build/adonis-typings/index.d.ts"
-  ],
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "lib": ["ES2022"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "declaration": true,
+    "rootDir": "./",
+    "outDir": "./build",
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "skipLibCheck": true
-  }
+    "types": ["@types/node", "@adonisjs/core", "@adonisjs/lucid", "@adonisjs/mail"]
+  },
+  "include": ["./**/*"],
+  "exclude": ["./node_modules", "./build"]
 }
