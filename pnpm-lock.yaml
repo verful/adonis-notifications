@@ -93,7 +93,7 @@ devDependencies:
     version: 8.0.3
   mrm:
     specifier: ^4.0.0
-    version: 4.1.17
+    version: 4.1.22
   np:
     specifier: ^9.0.0
     version: 9.0.0(typescript@4.9.5)
@@ -6631,8 +6631,8 @@ packages:
       yaml: 2.3.2
     dev: true
 
-  /mrm-core@7.1.17:
-    resolution: {integrity: sha512-6gsWXIWrGRdaJwtM7B0V/RyifiQlIK4XaE1Q/KLx5e0mAtRyNLD1l4A/2zG15HWJ93kwAIQtl0DBaHemE9vkIQ==}
+  /mrm-core@7.1.22:
+    resolution: {integrity: sha512-ZuJBEatzjyvA6+5Ogl02QbV70UNbe2jaxa29NzcL3g5VT7rHAMtE0v+vGOZkcmdl3ZtUDEq0BMj4qXgw8uSCXg==}
     engines: {node: '>=10.13'}
     dependencies:
       babel-code-frame: 6.26.0
@@ -6667,8 +6667,8 @@ packages:
       user-meta: 1.0.0
     dev: true
 
-  /mrm@4.1.17:
-    resolution: {integrity: sha512-IvLYiEvVkdtX8TZVyvDUgQrsppWuxB9VTceKyKVIZhid4M63sG7hiZ+GpfYfpw4ALnQCy3XIY7S6KMiXr/Px7g==}
+  /mrm@4.1.22:
+    resolution: {integrity: sha512-qvlUBfl5MU5YR50SJ3imjloqmYLrbX0uVN0cLIpU3lc0aUWPdl30BqJIX4V3Cr5zF4/QikBY7AYh6XWtp1cDJA==}
     engines: {node: '>=10.13'}
     hasBin: true
     dependencies:
@@ -6683,7 +6683,7 @@ packages:
       longest: 2.0.1
       middleearth-names: 1.1.0
       minimist: 1.2.8
-      mrm-core: 7.1.17
+      mrm-core: 7.1.22
       semver-utils: 1.1.4
       update-notifier: 4.1.3
       user-home: 2.0.0
