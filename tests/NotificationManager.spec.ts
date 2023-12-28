@@ -104,7 +104,7 @@ test.group('NotificationManager', (group) => {
     }
 
     const errorChannel = {
-      send: async (notification) => {
+      send: async (notification: string) => {
         throw new Error(`Test - ${notification}`)
       },
     }

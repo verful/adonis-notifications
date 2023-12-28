@@ -6,8 +6,9 @@ import {
 } from '@ioc:Verful/Notification'
 import { DateTime } from 'luxon'
 import createNotificationModel from '../Models/DatabaseNotification'
+import Application from '@adonisjs/core/build/services/app'
 
-const { column, hasMany } = global[Symbol.for('ioc.use')]('Adonis/Lucid/Orm')
+const { column, hasMany } = Application.container.use('Adonis/Lucid/Orm')
 
 /**
  * This mixin is used to add the notifications relationship to the model

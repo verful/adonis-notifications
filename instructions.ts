@@ -1,17 +1,13 @@
 import * as sinkStatic from '@adonisjs/sink'
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
+import pluralize from 'pluralize'
 import { join } from 'path'
 
 type InstructionsState = {
   notificationsTableName: string
   notificationsSchemaName: string
-
   notifiableTableName: string
-
-  mailer: string
-
   channels: ('database' | 'mail')[]
-
   hasChannel: {
     database: boolean
     mail: boolean
@@ -129,15 +125,18 @@ async function getChannels(sink: typeof sinkStatic) {
     )
 }
 
-async function getMigrationConsent(sink: typeof sinkStatic, tableName: string): Promise<boolean> {
-  return sink
-    .getPrompt()
-    .confirm(`Create migration for the ${sink.logger.colors.underline(tableName)} table?`)
+async function getMigrationConsent(sink: typeof sinkStatic): Promise<boolean> {
+  return sink.getPrompt().confirm(`You want to create a notifications table?`)
 }
 
-async function getNotificationTableName(sink: typeof sinkStatic): Promise<string> {
+async function getNotificationTableName(
+  sink: typeof sinkStatic,
+  notifiableTableName: string
+): Promise<string> {
+  const singularNotifiableTableName = pluralize.singular(notifiableTableName)
+
   return sink.getPrompt().ask('Enter the notifications table name', {
-    default: 'notifications',
+    default: `${singularNotifiableTableName}_notifications`,
     validate(value) {
       return !!value.trim().length
     },
@@ -153,14 +152,6 @@ async function getNotifiableTableName(sink: typeof sinkStatic): Promise<string> 
   })
 }
 
-async function getMailerName(sink: typeof sinkStatic): Promise<string> {
-  return sink.getPrompt().ask('Enter the mailer you want to use for mail notifications', {
-    validate(value) {
-      return !!value.trim().length
-    },
-  })
-}
-
 export default async function instructions(
   projectRoot: string,
   app: ApplicationContract,
@@ -170,7 +161,6 @@ export default async function instructions(
     notificationsSchemaName: 'Notifications',
     notificationsTableName: '',
     notifiableTableName: '',
-    mailer: '',
     channels: [],
     hasChannel: {
       database: false,
@@ -182,18 +172,13 @@ export default async function instructions(
   state.channels.forEach((channel) => (state.hasChannel[channel] = true))
 
   if (state.hasChannel.database) {
-    state.notifiableTableName = await getNotifiableTableName(sink)
-    state.notificationsTableName = await getNotificationTableName(sink)
-  }
+    const notificationMigrationConsent = await getMigrationConsent(sink)
 
-  const notificationMigrationConsent = await getMigrationConsent(sink, state.notificationsTableName)
-
-  if (state.hasChannel.mail) {
-    state.mailer = await getMailerName(sink)
-  }
-
-  if (notificationMigrationConsent) {
-    makeNotificationsMigration(projectRoot, app, sink, state)
+    if (notificationMigrationConsent) {
+      state.notifiableTableName = await getNotifiableTableName(sink)
+      state.notificationsTableName = await getNotificationTableName(sink, state.notifiableTableName)
+      makeNotificationsMigration(projectRoot, app, sink, state)
+    }
   }
 
   makeContract(projectRoot, app, sink, state)

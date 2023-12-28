@@ -1,7 +1,8 @@
 import { Manager } from '@poppinss/manager'
 import { string } from '@poppinss/utils/build/helpers'
 import fastq from 'fastq'
-
+import type { EmitterContract } from '@ioc:Adonis/Core/Event'
+import type { LoggerContract } from '@ioc:Adonis/Core/Logger'
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import {
   NotificationContract,
@@ -13,6 +14,8 @@ import {
   QueueMonitorCallback,
   TrapCallback,
   ResponseType,
+  DatabaseChannelConfig,
+  MailChannelConfig,
 } from '@ioc:Verful/Notification'
 import { ManagerConfigValidator } from '@poppinss/utils'
 
@@ -33,7 +36,7 @@ export default class Notification
 {
   private queue = fastq(this, this.sendQueued, 10)
 
-  public singleton = true
+  protected singleton = true
 
   private fakeChannel?: NotificationChannelContract
 
@@ -49,12 +52,17 @@ export default class Notification
     }
   }
 
-  public emitter = this.app.container.use('Adonis/Core/Event')
-  public logger = this.app.container.use('Adonis/Core/Logger')
+  private emitter: EmitterContract
+  private logger: LoggerContract
 
-  constructor(private app: ApplicationContract, private config: NotificationConfig) {
+  constructor(
+    private app: ApplicationContract,
+    private config: NotificationConfig
+  ) {
     super(app)
     this.validateConfig()
+    this.emitter = this.app.container.use('Adonis/Core/Event')
+    this.logger = this.app.container.use('Adonis/Core/Logger')
   }
 
   private validateConfig() {
@@ -88,7 +96,13 @@ export default class Notification
       .map((notifiable) => {
         const channels = [notification.via(notifiable)].flat()
         return channels.map((channel) => {
-          const message = notification[`to${string.capitalCase(channel)}`](notifiable)
+          const method = `to${string.capitalCase(channel)}` as `to${Capitalize<typeof channel>}`
+
+          if (!notification[method]) {
+            throw new Error(`Method ${method} not found on ${notification.constructor.name}`)
+          }
+
+          const message = notification[method]!(notifiable)
           return { channel, message, notifiable }
         })
       })
@@ -107,6 +121,7 @@ export default class Notification
         continue
       }
 
+      // @ts-ignore: always in the correct channel
       const response = await this.use(channel).send(message, notifiable)
       responses.push(response)
       this.emitter.emit('notification:sent', { notification: message, notifiable, channel })
@@ -135,12 +150,12 @@ export default class Notification
     this.send(notifiables, notification, true)
   }
 
-  protected createDatabase(_, config) {
+  protected createDatabase(_mappingName: string, config: DatabaseChannelConfig) {
     const DatabaseChannel = require('./Channels/Database').default
     return new DatabaseChannel(config)
   }
 
-  protected createMail(_, config) {
+  protected createMail(_mappingName: string, config: MailChannelConfig) {
     const MailChannel = require('./Channels/Mail').default
     return new MailChannel(config)
   }
@@ -149,11 +164,11 @@ export default class Notification
     return this.config.channel
   }
 
-  protected getMappingConfig(name: string) {
+  protected getMappingConfig(name: keyof NotificationChannelsList) {
     return this.config.channels[name]
   }
 
-  protected getMappingDriver(name: string) {
+  protected getMappingDriver(name: keyof NotificationChannelsList) {
     const config = this.getMappingConfig(name)
     return config && config.driver
   }

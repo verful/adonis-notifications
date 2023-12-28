@@ -7,6 +7,5 @@
     |
     */
     mail: {
-      driver: 'mail',
-      mailer: 'smtp'
+      driver: 'mail'
     },

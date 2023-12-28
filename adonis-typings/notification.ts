@@ -63,7 +63,9 @@ declare module '@ioc:Verful/Notification' {
   }
 
   export interface RoutesNotificationsMixin {
-    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+    <T extends NormalizeConstructor<LucidModel>>(
+      superclass: T
+    ): T & {
       new (...args: any[]): LucidRow & RoutesNotificationsModel
     }
   }
@@ -77,7 +79,9 @@ declare module '@ioc:Verful/Notification' {
   }
 
   export interface HasDatabaseNotificationsMixin {
-    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+    <T extends NormalizeConstructor<LucidModel>>(
+      superclass: T
+    ): T & {
       new (...args: any[]): LucidRow & HasDatabaseNotificationsModel
     }
   }
@@ -87,7 +91,9 @@ declare module '@ioc:Verful/Notification' {
       HasDatabaseNotificationsModel {}
 
   export interface NotifiableMixin {
-    <T extends NormalizeConstructor<LucidModel>>(superclass: T): T & {
+    <T extends NormalizeConstructor<LucidModel>>(
+      superclass: T
+    ): T & {
       new (...args: any[]): LucidRow & NotifiableModel
     }
   }

@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
-
-const { column, BaseModel } = global[Symbol.for('ioc.use')]('Adonis/Lucid/Orm')
+import Application from '@adonisjs/core/build/services/app'
 
 import { DatabaseNotificationModel, DatabaseNotificationRow } from '@ioc:Verful/Notification'
 import StaticImplements from '../Helpers/StaticImplements'
 import type { LucidModel } from '@ioc:Adonis/Lucid/Orm'
+
+const { column, BaseModel } = Application.container.use('Adonis/Lucid/Orm')
 
 export default function createNotificationModel(tableName: string): DatabaseNotificationModel {
   @StaticImplements<DatabaseNotificationModel>()
@@ -15,8 +16,9 @@ export default function createNotificationModel(tableName: string): DatabaseNoti
     public id: number
 
     @column({
-      prepare: (value) => JSON.stringify(value),
-      consume: (value) => (typeof value === 'string' ? JSON.parse(value) : value),
+      prepare: (value: Record<string, any>) => JSON.stringify(value),
+      consume: (value: string | Record<string, any>) =>
+        typeof value === 'string' ? JSON.parse(value) : value,
     })
     public data: Record<string, any>
 
