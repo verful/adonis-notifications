@@ -15,7 +15,7 @@ import { NotificationConfig } from '@ioc:Verful/Notification'
 | inside the `contracts/notification.ts` file before mentioning them here.
 |
 */
-const NotificationConfig: NotificationConfig = {
+const notificationsConfig: NotificationConfig = {
   channel: '{{ channels.0 }}',
   channels: {
 {{#hasChannel.database}}
@@ -24,8 +24,7 @@ const NotificationConfig: NotificationConfig = {
 {{#hasChannel.mail}}
 {{> mail_channel}}
 {{/hasChannel.mail}}
-  },
-  notificationsTable: '{{ notificationsTableName }}'
+  }
 }
 
 export default NotificationConfig
