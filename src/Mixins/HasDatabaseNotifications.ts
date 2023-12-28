@@ -6,7 +6,7 @@ import {
 } from '@ioc:Verful/Notification'
 import { DateTime } from 'luxon'
 import createNotificationModel from '../Models/DatabaseNotification'
-import Application from '@adonisjs/core/build/services/app'
+import Application from '@adonisjs/core/build/services/app.js'
 
 const { column, hasMany } = Application.container.use('Adonis/Lucid/Orm')
 

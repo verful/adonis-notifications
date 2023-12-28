@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import Application from '@adonisjs/core/build/services/app'
+import Application from '@adonisjs/core/build/services/app.js'
 
 import { DatabaseNotificationModel, DatabaseNotificationRow } from '@ioc:Verful/Notification'
 import StaticImplements from '../Helpers/StaticImplements'
