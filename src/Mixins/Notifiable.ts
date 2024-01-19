@@ -9,7 +9,7 @@ import RoutesNotifications from './RoutesNotifications'
  */
 function Notifiable(tableName: string): NotifiableMixin {
   return (superclass) => {
-    return class NotifiableModel extends compose(
+    return class extends compose(
       superclass,
       RoutesNotifications,
       HasDatabaseNotifications(tableName)
