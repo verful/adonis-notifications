@@ -17,7 +17,7 @@ function HasDatabaseNotifications(notificationsTable: string): HasDatabaseNotifi
   const DatabaseNotification = createNotificationModel(notificationsTable)
 
   return (superclass) => {
-    class HasDatabaseNotificationsModel
+    return class
       extends superclass
       implements HasDatabaseNotificationsModelContract
     {
@@ -52,7 +52,6 @@ function HasDatabaseNotifications(notificationsTable: string): HasDatabaseNotifi
         await this.related('notifications').query().update({ readAt: null })
       }
     }
-    return HasDatabaseNotificationsModel
   }
 }
 
