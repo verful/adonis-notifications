@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import HasDatabaseNotifications from '../../src/Mixins/HasDatabaseNotifications'
 import { createNotificationsTable, createUsersTable } from '../../bin/test/database'
 import { createNotification } from '../../bin/test/helpers'
@@ -19,7 +19,10 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
 
   test('Mixin gets applied succesfuly', ({ expect }) => {
     const Mixin = HasDatabaseNotifications('notifications')
-    class Model extends Mixin(BaseModel) {}
+    class Model extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
 
     expect(Model.$relationsDefinitions.get('notifications')!.relationName).toBe('notifications')
     expect(Model.prototype.markNotificationsAsRead).toEqual(expect.any(Function))
@@ -30,15 +33,20 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
 
   test('Related table comes from mixin argument', ({ expect }) => {
     const Mixin = HasDatabaseNotifications('test')
-    class Model extends Mixin(BaseModel) {}
+    class Model extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
 
     expect(Model.$relationsDefinitions.get('notifications')!.relatedModel().table).toBe('test')
   })
 
   test('Can access related notifications', async ({ expect }) => {
     const Mixin = HasDatabaseNotifications('notifications')
-
-    class User extends Mixin(BaseModel) {}
+    class User extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
     await User.boot()
 
     const user = await User.create({})
@@ -54,7 +62,10 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
   test('HasDatabaseNotifications.unreadNotifications', async ({ expect }) => {
     const Mixin = HasDatabaseNotifications('notifications')
 
-    class User extends Mixin(BaseModel) {}
+    class User extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
     await User.boot()
 
     const user = await User.create({})
@@ -72,7 +83,10 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
   }) => {
     const Mixin = HasDatabaseNotifications('notifications')
 
-    class User extends Mixin(BaseModel) {}
+    class User extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
     await User.boot()
 
     const user = await User.create({})
@@ -88,7 +102,10 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
   test('HasDatabaseNotifications.readNotifications with read notifications', async ({ expect }) => {
     const Mixin = HasDatabaseNotifications('notifications')
 
-    class User extends Mixin(BaseModel) {}
+    class User extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
     await User.boot()
 
     const user = await User.create({})
@@ -104,7 +121,10 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
   test('HasDatabaseNotifications.markNotificationsAsRead', async ({ expect }) => {
     const Mixin = HasDatabaseNotifications('notifications')
 
-    class User extends Mixin(BaseModel) {}
+    class User extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
     await User.boot()
 
     const user = await User.create({})
@@ -122,7 +142,10 @@ test.group('HasDatabaseNotificationsMixin', (group) => {
   test('HasDatabaseNotifications.markNotificationsAsUnread', async ({ expect }) => {
     const Mixin = HasDatabaseNotifications('notifications')
 
-    class User extends Mixin(BaseModel) {}
+    class User extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
     await User.boot()
 
     const user = await User.create({})

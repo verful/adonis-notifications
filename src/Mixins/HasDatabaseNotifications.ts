@@ -8,8 +8,6 @@ import { DateTime } from 'luxon'
 import createNotificationModel from '../Models/DatabaseNotification'
 import Application from '@adonisjs/core/build/services/app.js'
 
-const { column, hasMany } = Application.container.use('Adonis/Lucid/Orm')
-
 /**
  * This mixin is used to add the notifications relationship to the model
  */
@@ -17,17 +15,23 @@ function HasDatabaseNotifications(notificationsTable: string): HasDatabaseNotifi
   const DatabaseNotification = createNotificationModel(notificationsTable)
 
   return (superclass) => {
-    return class
-      extends superclass
-      implements HasDatabaseNotificationsModelContract
-    {
-      @column({ isPrimary: true })
-      public id: any
+    return class extends superclass implements HasDatabaseNotificationsModelContract {
+      public static boot() {
+        if (this.booted) return
+        super.boot()
 
-      @hasMany(() => DatabaseNotification, {
-        localKey: 'id',
-        foreignKey: 'notifiableId',
-      })
+        this.$addNotificationsRelation()
+      }
+
+      private static $addNotificationsRelation() {
+        const relatedModel = () => DatabaseNotification
+        this.$addRelation('notifications', 'hasMany', relatedModel, {
+          relatedModel,
+          localKey: 'id',
+          foreignKey: 'notifiableId',
+        })
+      }
+
       public notifications: HasMany<DatabaseNotificationModel>
 
       public async readNotifications(this: HasDatabaseNotificationsModel) {
