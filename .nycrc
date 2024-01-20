@@ -2,8 +2,5 @@
   "extends": "@istanbuljs/nyc-config-typescript",
   "all": true,
   "check-coverage": true,
-  "include": [
-    "src/**/*.ts",
-    "providers/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "providers/**/*.ts"]
 }

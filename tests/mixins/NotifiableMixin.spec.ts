@@ -1,12 +1,15 @@
 import { test } from '@japa/runner'
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import Notifiable from '../../src/Mixins/Notifiable'
 
 const Mixin = Notifiable('notifications')
 
 test.group('NotifiableMixin', () => {
   test('Mixin gets applied succesfuly', ({ expect }) => {
-    class Model extends Mixin(BaseModel) {}
+    class Model extends Mixin(BaseModel) {
+      @column({ isPrimary: true })
+      public id: number
+    }
 
     expect(Model.$relationsDefinitions.get('notifications')!.relationName).toBe('notifications')
     expect(Model.prototype.markNotificationsAsRead).toEqual(expect.any(Function))

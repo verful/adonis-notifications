@@ -6,9 +6,6 @@ import {
 } from '@ioc:Verful/Notification'
 import { DateTime } from 'luxon'
 import createNotificationModel from '../Models/DatabaseNotification'
-import Application from '@adonisjs/core/build/services/app.js'
-
-const { column, hasMany } = Application.container.use('Adonis/Lucid/Orm')
 
 /**
  * This mixin is used to add the notifications relationship to the model
@@ -17,42 +14,46 @@ function HasDatabaseNotifications(notificationsTable: string): HasDatabaseNotifi
   const DatabaseNotification = createNotificationModel(notificationsTable)
 
   return (superclass) => {
-    class HasDatabaseNotificationsModel
-      extends superclass
-      implements HasDatabaseNotificationsModelContract
-    {
-      @column({ isPrimary: true })
-      public id: any
+    return class extends superclass implements HasDatabaseNotificationsModelContract {
+      public static boot() {
+        if (this.booted) return
+        super.boot()
 
-      @hasMany(() => DatabaseNotification, {
-        localKey: 'id',
-        foreignKey: 'notifiableId',
-      })
+        this.$addNotificationsRelation()
+      }
+
+      private static $addNotificationsRelation() {
+        const relatedModel = () => DatabaseNotification
+        this.$addRelation('notifications', 'hasMany', relatedModel, {
+          localKey: 'id',
+          foreignKey: 'notifiableId',
+        })
+      }
+
       public notifications: HasMany<DatabaseNotificationModel>
 
-      public async readNotifications(this: HasDatabaseNotificationsModel) {
+      public async readNotifications(this: HasDatabaseNotificationsModelContract) {
         return this.related('notifications')
           .query()
           .whereNotNull('readAt')
           .orderBy('createdAt', 'desc')
       }
 
-      public async unreadNotifications(this: HasDatabaseNotificationsModel) {
+      public async unreadNotifications(this: HasDatabaseNotificationsModelContract) {
         return this.related('notifications')
           .query()
           .whereNull('readAt')
           .orderBy('createdAt', 'desc')
       }
 
-      public async markNotificationsAsRead(this: HasDatabaseNotificationsModel) {
+      public async markNotificationsAsRead(this: HasDatabaseNotificationsModelContract) {
         await this.related('notifications').query().update({ readAt: DateTime.now().toSQL() })
       }
 
-      public async markNotificationsAsUnread(this: HasDatabaseNotificationsModel) {
+      public async markNotificationsAsUnread(this: HasDatabaseNotificationsModelContract) {
         await this.related('notifications').query().update({ readAt: null })
       }
     }
-    return HasDatabaseNotificationsModel
   }
 }
 
