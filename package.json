@@ -26,7 +26,7 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^5.9.6",
+    "@adonisjs/assembler": "^7.1.0",
     "@adonisjs/core": "^5.8.3",
     "@adonisjs/lucid": "^18.4.2",
     "@adonisjs/mail": "^8.1.2",
