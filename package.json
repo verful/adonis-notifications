@@ -30,7 +30,6 @@
     "@adonisjs/core": "^5.8.3",
     "@adonisjs/lucid": "^18.4.2",
     "@adonisjs/mail": "^8.1.2",
-    "@adonisjs/mrm-preset": "^5.0.3",
     "@adonisjs/require-ts": "^2.0.12",
     "@adonisjs/sink": "^5.3.2",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -42,18 +41,13 @@
     "@types/luxon": "3.4.1",
     "@types/node": "^17.0.38",
     "@types/pluralize": "^0.0.33",
-    "commitizen": "^4.2.4",
     "copyfiles": "^2.4.1",
-    "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^4.0.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-adonis": "^2.1.0",
     "eslint-plugin-prettier": "^5.1.2",
-    "github-label-sync": "^2.2.0",
     "husky": "^8.0.1",
-    "mrm": "^4.0.0",
-    "np": "^9.2.0",
     "nyc": "^15.1.0",
     "prettier": "^3.1.1",
     "reflect-metadata": "^0.2.1",
@@ -74,20 +68,16 @@
     }
   },
   "scripts": {
-    "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "test": "node -r @adonisjs/assembler/build/register bin/test/index.ts",
     "coverage": "nyc pnpm test",
-    "clean": "del build",
+    "clean": "del-cli build",
     "copyfiles": "copyfiles \"templates/**/*.txt\" \"instructions.md\" build",
     "compile": "pnpm lint && pnpm clean && tsc",
     "build": "pnpm compile && pnpm copyfiles",
     "prepublishOnly": "pnpm build",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
-    "commit": "git-cz",
-    "release": "np --message=\"chore(release): %s\"",
-    "version": "pnpm build",
-    "sync-labels": "github-label-sync --labels ./node_modules/@adonisjs/mrm-preset/gh-labels.json verful/notifications"
+    "version": "pnpm build"
   },
   "engines": {
     "node": ">=10"
@@ -144,5 +134,36 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "body-max-line-length": [
+        0,
+        "always"
+      ]
+    }
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
   }
 }
