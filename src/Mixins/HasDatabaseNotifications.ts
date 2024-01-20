@@ -6,7 +6,6 @@ import {
 } from '@ioc:Verful/Notification'
 import { DateTime } from 'luxon'
 import createNotificationModel from '../Models/DatabaseNotification'
-import Application from '@adonisjs/core/build/services/app.js'
 
 /**
  * This mixin is used to add the notifications relationship to the model
@@ -26,7 +25,6 @@ function HasDatabaseNotifications(notificationsTable: string): HasDatabaseNotifi
       private static $addNotificationsRelation() {
         const relatedModel = () => DatabaseNotification
         this.$addRelation('notifications', 'hasMany', relatedModel, {
-          relatedModel,
           localKey: 'id',
           foreignKey: 'notifiableId',
         })
@@ -34,25 +32,25 @@ function HasDatabaseNotifications(notificationsTable: string): HasDatabaseNotifi
 
       public notifications: HasMany<DatabaseNotificationModel>
 
-      public async readNotifications(this: HasDatabaseNotificationsModel) {
+      public async readNotifications(this: HasDatabaseNotificationsModelContract) {
         return this.related('notifications')
           .query()
           .whereNotNull('readAt')
           .orderBy('createdAt', 'desc')
       }
 
-      public async unreadNotifications(this: HasDatabaseNotificationsModel) {
+      public async unreadNotifications(this: HasDatabaseNotificationsModelContract) {
         return this.related('notifications')
           .query()
           .whereNull('readAt')
           .orderBy('createdAt', 'desc')
       }
 
-      public async markNotificationsAsRead(this: HasDatabaseNotificationsModel) {
+      public async markNotificationsAsRead(this: HasDatabaseNotificationsModelContract) {
         await this.related('notifications').query().update({ readAt: DateTime.now().toSQL() })
       }
 
-      public async markNotificationsAsUnread(this: HasDatabaseNotificationsModel) {
+      public async markNotificationsAsUnread(this: HasDatabaseNotificationsModelContract) {
         await this.related('notifications').query().update({ readAt: null })
       }
     }
