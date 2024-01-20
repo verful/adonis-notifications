@@ -19,8 +19,8 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["@types/node", "@adonisjs/core", "@adonisjs/lucid", "@adonisjs/mail"]
+    "types": ["@types/node", "@adonisjs/core", "@adonisjs/lucid", "@adonisjs/mail"],
   },
   "include": ["./**/*"],
-  "exclude": ["./node_modules", "./build"]
+  "exclude": ["./node_modules", "./build"],
 }

@@ -12,5 +12,5 @@ updates:
     groups:
       minor-and-patch:
         update-types:
-        - "minor"
-        - "patch"
+          - 'minor'
+          - 'patch'
