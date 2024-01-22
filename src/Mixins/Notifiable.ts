@@ -7,7 +7,7 @@ import RoutesNotifications from './RoutesNotifications'
 /**
  * This trait is used to add the hability to notify a model using any channel
  */
-function Notifiable(tableName: string): NotifiableMixin {
+function Notifiable(tableName = 'notifications'): NotifiableMixin {
   return (superclass) => {
     return class extends compose(
       superclass,
