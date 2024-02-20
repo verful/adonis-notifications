@@ -1,151 +1,58 @@
 {
   "name": "@verful/notifications",
-  "description": "The easiest way to send notifications in AdonisJS",
-  "version": "2.0.2",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/verful/notifications.git"
+  "description": "A opinionated boilerplate for AdonisJS v6 packages",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
   },
-  "main": "build/providers/NotificationProvider.js",
-  "types": "build/adonis-typings/index.d.ts",
   "files": [
-    "build/commands",
-    "build/adonis-typings",
-    "build/providers",
-    "build/templates",
-    "build/src",
-    "build/instructions.js",
-    "build/instructions.md"
+    "build"
   ],
+  "main": "build/index.js",
+  "type": "module",
+  "author": "Arthur Rezende <arthur-er@protonmail.com>",
   "license": "MIT",
+  "keywords": [
+    "adonis",
+    "adonisjs",
+    "adonis-framework"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
+  "scripts": {
+    "test": "node --enable-source-maps --loader=ts-node/esm bin/test.ts",
+    "lint": "eslint \"./**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "coverage": "c8 node --enable-source-maps --loader=ts-node/esm bin/test.ts",
+    "prepare": "husky"
+  },
   "dependencies": {
-    "@poppinss/manager": "^5.0.2",
-    "@poppinss/utils": "^5.0.0",
-    "fastq": "^1.16.0",
-    "luxon": "^3.4.4",
-    "pluralize": "^8.0.0"
+    "@poppinss/utils": "^6.7.2"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^5.9.6",
-    "@adonisjs/core": "^5.8.3",
-    "@adonisjs/lucid": "^18.4.2",
-    "@adonisjs/mail": "^8.1.2",
-    "@adonisjs/require-ts": "^2.0.12",
-    "@adonisjs/sink": "^5.3.2",
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@japa/expect": "^1.1.4",
-    "@japa/run-failed-tests": "^1.0.7",
-    "@japa/runner": "^2.0.8",
-    "@japa/spec-reporter": "^1.1.12",
-    "@poppinss/dev-utils": "^2.0.3",
-    "@types/luxon": "3.4.1",
-    "@types/node": "^17.0.38",
-    "@types/pluralize": "^0.0.33",
-    "copyfiles": "^2.4.1",
-    "del-cli": "^4.0.1",
+    "@adonisjs/assembler": "^7.1.1",
+    "@adonisjs/core": "^6.2.3",
+    "@japa/assert": "^2.1.0",
+    "@japa/runner": "^3.1.1",
+    "@semantic-release/git": "^10.0.1",
+    "@types/node": "^20.11.19",
+    "@verful/tooling-configs": "^1.2.0",
+    "c8": "^9.1.0",
     "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-adonis": "^2.1.0",
-    "eslint-plugin-prettier": "^5.1.2",
-    "husky": "^8.0.1",
-    "nyc": "^15.1.0",
-    "prettier": "^3.1.1",
-    "reflect-metadata": "^0.2.1",
-    "sqlite3": "^5.0.8",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "semantic-release": "^23.0.2",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@adonisjs/core": "^5.8.3",
-    "@adonisjs/lucid": "^16.3.2 || ^17.0.0 || ^18.0.0",
-    "@adonisjs/mail": "^8.1.2"
+    "@adonisjs/core": "^6.2.3"
   },
-  "peerDependenciesMeta": {
-    "@adonisjs/lucid": {
-      "optional": true
-    },
-    "@adonisjs/mail": {
-      "optional": true
-    }
-  },
-  "scripts": {
-    "test": "node -r @adonisjs/assembler/build/register bin/test/index.ts",
-    "coverage": "nyc pnpm test",
-    "clean": "del-cli build",
-    "copyfiles": "copyfiles \"templates/**/*.txt\" \"instructions.md\" build",
-    "compile": "pnpm lint && pnpm clean && tsc",
-    "build": "pnpm compile && pnpm copyfiles",
-    "prepublishOnly": "pnpm build",
-    "lint": "eslint . --ext=.ts",
-    "format": "prettier --write .",
-    "version": "pnpm build"
-  },
-  "engines": {
-    "node": ">=10"
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:adonis/typescriptPackage",
-      "prettier"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "endOfLine": "auto"
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "build"
-  ],
-  "prettier": {
-    "trailingComma": "es5",
-    "semi": false,
-    "singleQuote": true,
-    "useTabs": false,
-    "quoteProps": "consistent",
-    "bracketSpacing": true,
-    "arrowParens": "always",
-    "printWidth": 100
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "np": {
-    "contents": ".",
-    "anyBranch": false
-  },
-  "adonisjs": {
-    "types": "@verful/notifications",
-    "instructions": "./build/instructions.js",
-    "instructionsMd": "./build/instructions.md",
-    "providers": [
-      "@verful/notifications"
-    ],
-    "commands": [
-      "@verful/notifications/build/commands"
-    ]
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
-    "rules": {
-      "body-max-line-length": [
-        0,
-        "always"
-      ]
-    }
-  },
+  "prettier": "@verful/tooling-configs/prettier",
   "release": {
     "branches": [
       "main"
@@ -165,5 +72,17 @@
         }
       ]
     ]
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/**"
+    ]
+  },
+  "lint-staged": {
+    "*.ts": "eslint --fix"
   }
 }

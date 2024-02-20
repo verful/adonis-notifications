@@ -1,8 +1,0 @@
-{
-  "providers": [
-    "@adonisjs/core",
-    "@adonisjs/mail",
-    "@adonisjs/lucid",
-    "./providers/NotificationProvider"
-  ]
-}
