@@ -1,0 +1,30 @@
+/**
+ *
+ * Feel free to let us know via PR, if you find something broken in this config
+ * file.
+ */
+
+import { NotificationConfig } from '@ioc:Verful/Notification'
+
+/*
+|--------------------------------------------------------------------------
+| Notification Mapping
+|--------------------------------------------------------------------------
+|
+| List of available notification channels. You must first define them
+| inside the `contracts/notification.ts` file before mentioning them here.
+|
+*/
+const notificationsConfig: NotificationConfig = {
+  channel: '{{ channels.0 }}',
+  channels: {
+{{#hasChannel.database}}
+{{> database_channel}}
+{{/hasChannel.database}}
+{{#hasChannel.mail}}
+{{> mail_channel}}
+{{/hasChannel.mail}}
+  }
+}
+
+export default notificationsConfig
