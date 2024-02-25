@@ -1,0 +1,11 @@
+    /*
+    |--------------------------------------------------------------------------
+    | Database channel
+    |--------------------------------------------------------------------------
+    |
+    | Use this channel to store notifications in the database.
+    |
+    */
+    database: {
+      driver: 'database',
+    },
