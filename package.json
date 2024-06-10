@@ -33,7 +33,7 @@
     "@adonisjs/require-ts": "^2.0.12",
     "@adonisjs/sink": "^5.3.2",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@japa/expect": "^1.1.4",
+    "@japa/expect": "^2.0.2",
     "@japa/run-failed-tests": "^1.0.7",
     "@japa/runner": "^2.0.8",
     "@japa/spec-reporter": "^1.1.12",
